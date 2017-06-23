@@ -12,6 +12,9 @@ stages:
   - test
 
 before_script:
+
+  - echo Europe/Copenhagen > /etc/timezone
+  - dpkg-reconfigure -f noninteractive tzdata
   - mix local.hex –force
   - mix local.rebar –force
   - mix deps.get
