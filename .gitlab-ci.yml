@@ -23,4 +23,3 @@ unit-testing:
   script:
     - MIX_ENV=test mix test
 
-tags: - elixir
