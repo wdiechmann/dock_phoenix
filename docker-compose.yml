@@ -2,6 +2,7 @@ version: '2'
 services:  
   dock_phoenix:
     # tell docker-compose which Dockerfile it needs to build
+    image: dock_phoenix/web
     build:
       context: .
       dockerfile: Dockerfile.development
@@ -15,8 +16,9 @@ services:
     depends_on:
       - postgres
   dock_phoenix_test:
+    image: dock_phoenix/web
     depends_on:
-      - dock_phoenix:
+      - dock_phoenix
     command: [ "mix","test" ]
   postgres:
     # use postgres 9.3.17
