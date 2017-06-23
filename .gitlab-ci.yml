@@ -12,7 +12,9 @@ stages:
   - test
 
 before_script:
-
+  - apt-get install --no-install-recommends -y tzdata locales debconf 
+  - echo 'da_DK.UTF-8 UTF-8' >> /etc/locale.gen && locale-gen
+  - export LANG=da_DK.UTF-8
   - echo Europe/Copenhagen > /etc/timezone
   - dpkg-reconfigure -f noninteractive tzdata
   - mix local.hex –force
