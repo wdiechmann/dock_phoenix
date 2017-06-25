@@ -12,8 +12,8 @@ config :logger, level: :warn
 # Configure your database
 config :dock_phoenix, DockPhoenix.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
-  database: "dock_phoenix_test",
+  username: System.get_env("POSTGRESQL_USER") || "postgres",
+  password: System.get_env("POSTGRESQL_PASSWORD") || "postgres",
+  database: System.get_env("POSTGRESQL_DB_NAME") || "postgres",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
