@@ -5,8 +5,8 @@ services:
 
 variables:
   POSTGRES_DB_NAME: dock_phoenix_test
-  POSTGRES_USER: phoenix
-  POSTGRES_PASSWORD: secret
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
 
 stages:
   - test
