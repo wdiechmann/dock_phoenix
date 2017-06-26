@@ -15,5 +15,5 @@ config :dock_phoenix, DockPhoenix.Repo,
   username: System.get_env("POSTGRESQL_USER") || "postgres",
   password: System.get_env("POSTGRESQL_PASSWORD") || "postgres",
   database: System.get_env("POSTGRESQL_DB_NAME") || "postgres",
-  hostname: "localhost",
+  hostname: "postgres",
   pool: Ecto.Adapters.SQL.Sandbox
