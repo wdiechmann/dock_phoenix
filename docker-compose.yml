@@ -15,11 +15,21 @@ services:
     # make sure we start postgres when we start this service
     depends_on:
       - postgres
+    environment:
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_USER=phoenix
+      - POSTGRES_DB_NAME=dock_phoenix_dev
+
   dock_phoenix_test:
     image: dock_phoenix/web
     depends_on:
       - dock_phoenix
     command: [ "mix","test" ]
+    environment:
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_USER=phoenix
+      - POSTGRES_DB_NAME=dock_phoenix_dev
+
   postgres:
     # use postgres 9.3.17
     image: postgres:9.3.17-alpine
@@ -31,6 +41,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=secret
       - POSTGRES_USER=phoenix
+      - POSTGRES_DB_NAME=dock_phoenix_dev
       
 # create a named datavolume
 volumes:  

@@ -1,7 +1,15 @@
 # DockPhoenix
 
+DockPhoenix really is kind of a Phoenix Template! 
+
+If you'd like to use this template for a new project, all you have to do is follow 
+the recipe below, labeled: Use DockPhoenix As Template
+
+Best of all - you do not have to have neither Elixir nor Phoenix installed on your computer!
+
 To start your Phoenix app:
 
+  * 
   * Install dependencies with `mix deps.get`
   * Create and migrate your database with `mix ecto.create && mix ecto.migrate`
   * Install Node.js dependencies with `npm install`
