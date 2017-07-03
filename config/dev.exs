@@ -36,8 +36,8 @@ config :phoenix, :stacktrace_depth, 20
 # Configure your database
 config :dock_phoenix, DockPhoenix.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: System.get_env("POSTGRESQL_USER") || "postgres",
-  password: System.get_env("POSTGRESQL_PASSWORD") || "postgres",
-  database: System.get_env("POSTGRESQL_DB_NAME") || "postgres",
+  username: System.get_env("POSTGRES_USER") || "postgres",
+  password: System.get_env("POSTGRES_PASSWORD") || "postgres",
+  database: System.get_env("POSTGRES_DB_NAME") || "postgres",
   hostname: "postgres",
   pool_size: 10
