@@ -94,13 +94,24 @@
         font-family: 'Cedarville Cursive', cursive;
         margin-top: -300px;
       }
+      .logo.alco a {
+          background: url(static/images/logos/logo-white.svg) no-repeat 0 0;
+          background-size: 10rem;
+          width: 10rem;
+          height: 4.8rem;
+          vertical-align: middle;
+          float: left;
+          text-indent: -4000px;
+          /* padding-left: 6rem; */
+      }
+      header[role=banner] { background-color: #1f2c39; }
     </style>
 
   </head>
   <body>
     <header role="banner">
       <nav role="navigation">
-        <p class="logo"><a href="index.html" title="WebSlides">DPEPA</a></p>
+        <p class="logo alco"><a href="http://alco.dk" title="WebSlides">DPEPA</a></p>
         <ul>
           <li class="github">
             <a rel="external" href="https://github.com/webslides/webslides" title="Github">
@@ -158,7 +169,7 @@
               I will not present, <br>
               using <a href="https://github.com/hashrocket/gatling">Gatling</a>, <a href="http://nsomar.com/how-to-use-flynn-to-deploy-a-phenix-app/">Flynn</a><br>
               or <a href="http://box.cloudless.studio/"> Cloudless</a> for that matter!!<br>
-              Docker Enterprise stuff <br>
+              Docker Enterprise stuff & multi-stage Docker Compose<br>
               running your own <strong style="color: red">GitLab</strong>, running your own <strong style="color: red">Docker Registry</strong>,<br>
               how-to configure <strong style="color: red">Nginx with SSL</strong>, <strong style="color: red">'hot reload'</strong> migrations, <br>
               <strong style="color: red">Docker Swarm</strong> setup, and I will not talk about DevOps <strong style="color: red">instrumentation</strong> (Chef/Puppet/Salt,etc)<br>
@@ -402,12 +413,31 @@ LANG=da_DK.utf-8 
                 <p class="text-intro">A fresh Phoenix app <br>- and a Dockerfile to run the (My)SQL server</p>
                 <pre class="steps">
                   <dl class="text-interview">
-                      <dt>1</dt><dd>mkdir ~/projects/meetup \ <br>&& cd ~/projects/meetup</dd>
-                      <dt>2</dt><dd>mkdir mysql mysql/data \ <br>&& vi mysql/Dockerfile mysql/setup.sql</dd>
-                      <dt>3</dt><dd>mix phx.new meetup --database=mysql </dd>
-                      <dt>4</dt><dd>vi meetup/config/dev.exs (add mysql creds)</dd>
+                      <dt>1</dt><dd>mkdir ~/projects/meetup ~/projects/meetup/mysql ~/projects/meetup/mysql/data\ <br></dd>
+                      <dt>2</dt><dd>cd ~/projects/meetup && vi mysql/Dockerfile mysql/setup.sql </dd>
+                      <dt>3</dt><dd>cd ~/projects && mix phx.new meetup --database=mysql </dd>
+                      <dt>4</dt><dd>vi meetup/config/dev.exs (adding mysql creds)</dd>
                   </dl>
                 </pre>
+                <p></p>
+                <pre class="steps">
+# config/dev.exs
+
+config :meetup, Meetup.Repo,
+
+  adapter: Ecto.Adapters.MySQL,
+
+  username: "meetup",
+
+  password: "pASSword",
+
+  database: "meetup_dev",
+
+  hostname: "<b style="color: red">localhost</b>",
+
+  pool_size: 10
+                </pre>
+
               </div>
               <!-- .end .column -->
               <div class="column">
@@ -429,6 +459,7 @@ LANG=da_DK.utf-8 
                 <p></p>
                 <pre>
 <span class="code-comment"> # ./mysql/setup.sql</span>
+<b style="color: teal">CREATE SCHEMA</b> 'meetup_dev';
 <b style="color: teal">DROP USER</b> 'meetup';
 <b style="color: teal">CREATE USER</b> 'meetup'@'%' <b style="color: teal">IDENTIFIED BY</b> 'pASSword';
 <b style="color: teal">GRANT ALL PRIVILEGES ON</b> *.* <b style="color: teal">TO</b> 'meetup'@'%';
@@ -452,13 +483,13 @@ LANG=da_DK.utf-8 
                 <p class="text-intro">Docker Compose - making it a concerted effort (semi-local)!</p>
                 <pre class="steps">
                   <dl class="text-interview">
-                      <dt>5</dt><dd>vi ~/projects/meetup/docker-compose.yml</dd>
+                      <dt>5</dt><dd>cd ~/projects/meetup && vi docker-compose.yml</dd>
                       <dt>6</dt><dd>docker-compose up -d db</dd>
-                      <dt>7</dt><dd>cd ~/projects/meetup/meetup</dd>
-                      <dt>8</dt><dd>MIX_ENV=dev mix ecto.create</dd>
-                      <dt>9</dt><dd>MIX_ENV=dev mix phx.server</dd>
+                      <dt>7</dt><dd>MIX_ENV=dev mix ecto.create</dd>
+                      <dt>8</dt><dd>MIX_ENV=dev mix phx.server</dd>
                   </dl>
                 </pre>
+                <p style="color: red">having some issues with adding other users than root :(</p>
               </div>
               <!-- .end .column -->
               <div class="column">
@@ -495,8 +526,8 @@ LANG=da_DK.utf-8 
               <div class="column">
                 <pre class="steps">
                   <dl class="text-interview">
-                    <dt>1</dt><dd>mkdir ~/projects/dock_phoenix && \<br>cd ~/projects/dock_phoenix</dd>
-                    <dt>2</dt><dd>vi docker-compose.yml</dd>
+                    <dt>1</dt><dd>mkdir ~/projects/dock_phoenix && \<br>mkdir ~/projects/dock_phoenix/db && \<br>cd ~/projects/dock_phoenix</dd>
+                    <dt>2</dt><dd>mkdir db/init db/data <br>vi docker-compose.yml init/01-createmyuser.sh</dd>
                     <dt>3</dt><dd>docker-compose up -d postgres</dd>
                   </dl>
                 </pre>
@@ -504,16 +535,14 @@ LANG=da_DK.utf-8 
                 <pre>
 <span class="code-comment"># ./docker-compose.yml (postgres db)</span>
   <b style="color: maroon">postgres:</b>
-    <b style="color: maroon">image:</b> postgres:9.3.17-alpine
+    <b style="color: maroon">build:</b> ./db
+    <b style="color: maroon">restart:</b> 'always'
     <b style="color: maroon">volumes:</b>
-       - db_data:/var/lib/postgresql/data
+       - ./db/data:/var/lib/postgresql/data
     <b style="color: maroon">environment:</b>
-      - POSTGRES_PASSWORD=secret
-      - POSTGRES_USER=phoenix
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
       - POSTGRES_DB_NAME=dock_phoenix_dev
-<span class="code-comment"># create a named datavolume</span>
-<b style="color: maroon">volumes: </b>
-    <b style="color: maroon">db_data:</b>
                 </pre>
               </div>
               <!-- .end .column -->
@@ -536,10 +565,17 @@ LANG=da_DK.utf-8 
     <b style="color: maroon">depends_on:</b>
       - postgres
     <b style="color: maroon">environment:</b>
-      - POSTGRES_PASSWORD=secret
-      - POSTGRES_USER=phoenix
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
       - POSTGRES_DB_NAME=dock_phoenix_dev
                 </pre>
+                <p></p>
+                <pre>
+# db/Dockerfile
+FROM postgres:9.3.17-alpine
+ADD ./init /docker-entrypoint-initdb.d/                  
+                </pre>
+
               </div>
               <!-- .end .column -->
             </div>
@@ -577,8 +613,7 @@ LANG=da_DK.utf-8 
 <b style="color: teal">RUN</b> mix local.hex --force
 <b style="color: teal">RUN</b> mix local.rebar --force
 <b style="color: teal">RUN</b> mix archive.install --force\
-    https://github.com/phoenixframework/\
-    archives/raw/master/phoenix_new.ez
+    https://github.com/phoenixframework/archives/raw/master/phx_new.ez
 <b style="color: teal">RUN</b> curl -sL \
     https://deb.nodesource.com/setup_6.x\
     | bash -
