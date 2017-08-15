@@ -23,19 +23,3 @@ WORKDIR /app
 COPY . /app  
 
 EXPOSE "4000"
-
-# build Phoenix App
-# docker-compose run dock_phoenix mix phoenix.new . --app dock_phoenix
-
-# install node dependencies - automagically so no need to do!
-# docker-compose run --rm dock_phoenix mix deps.get
-# docker-compose run --rm dock_phoenix npm install  
-# docker-compose run --rm dock_phoenix node node_modules/brunch/bin/brunch build
-
-# edit config/dev.exs -> hostname: postgres
-# get ready to run
-# docker-compose run --rm dock_phoenix mix ecto.create
-# docker-compose run --rm dock_phoenix mix compile
-
-# run phoenix in *dev* mode on port 4000
-# docker-compose run --rm dock_phoenix mix phoenix.server 

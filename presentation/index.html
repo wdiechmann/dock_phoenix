@@ -579,15 +579,12 @@ $ mkdir proxy db app db/init
 $ cd db && docker build -t all-n-db-image .
 $ docker run --name all-n-db
   -p 127.0.0.1:5432:5432 \
-  -v ./data:/var/lib/postgresql/data \
+  -v $(pwd)/data:/var/lib/postgresql/data \
   -e POSTGRES_PASSWORD=all_n \
   -e POSTGRES_DB_DATABASE=all_n_dev \
   -e POSTGRES_DB_USER=all_n \
   -e POSTGRES_DB_PASSWORD=pASSword \
   all-n-db-image:latest
-
-
-
                 </pre>
                 <p></p>
               </div>
@@ -596,10 +593,10 @@ $ docker run --name all-n-db
               <div class="column">
                 <pre>
 # db/Dockerfile
-FROM postgres:9.3.17-alpine
-RUN localedef -i da_DK -c -f UTF-8 -A /usr/share/locale/locale.alias da_DK.UTF-8
-ENV LANG da_DK.utf8
-ADD ./init /docker-entrypoint-initdb.d/                  
+<b style="color: teal">FROM</b> postgres:9.3.17-alpine
+<b style="color: teal">RUN</b>  localedef -i da_DK -c -f UTF-8 -A /usr/share/locale/locale.alias da_DK.UTF-8
+<b style="color: teal">ENV</b>  LANG da_DK.utf8
+<b style="color: teal">ADD</b>  ./init /docker-entrypoint-initdb.d/                  
                 </pre>
                 <p><small>[ below are excepts from the examples/all_n/db/init/01-create-my-user.sh file ]</small></p>
                 <pre>
@@ -621,6 +618,95 @@ EOSQL
           <!-- .end .wrap -->
         </section>
 
+
+        <!-- slide 13 -->
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+            <div class="grid vertical-align">
+              <div class="column">
+                <h3><strong>1: Develop</strong> - <small>dipping toes 2</small></h3>
+                <p class="text-intro">Gimme' all your containers!</p>
+                <p>With the PostgreSQL database well under our belt, let's move on and get the 
+                  app server running. 
+                </p>
+                <p>Now with 2 services all we expect to being doing is: <code>$ docker-compose up</code> but it will
+                take just a tad more keying in to do than that, especially because we really like to
+                get a feeling for what goes on behind the 'compose' curtains :) [ remember to keep your all-n-db running! ]</p>
+                <pre>
+$ docker build -t all-n-app-image app/Dockerfile.development
+$ docker run --rm -e MIX_ENV=dev all-n-app-image:latest mix phx.new . --app all_n 
+
+                </pre>
+                <p></p>
+              </div>
+              <!-- .end .column -->
+
+              <div class="column">
+                <pre>
+# app/Dockerfile.development
+<b style="color: teal">FROM</b>  elixir:latest
+<b style="color: teal">MAINTAINER</b>  Walther H. Diechmann <walther@alco.dk>
+
+<b style="color: teal">RUN</b>  echo Europe/Copenhagen > /etc/timezone
+<b style="color: teal">RUN</b>  dpkg-reconfigure -f noninteractive tzdata
+
+# install hex package manager
+<b style="color: teal">RUN</b>  mix local.hex --force
+<b style="color: teal">RUN</b>  mix local.rebar --force
+
+# install the latest phoenix 
+<b style="color: teal">RUN</b>  mix archive.install https://github.com/phoenixframework/archives/raw/master/phoenix_new.ez --force
+
+# install node & inotify (for hot-reload during development)
+<b style="color: teal">RUN</b>  curl -sL https://deb.nodesource.com/setup_6.x | bash -
+<b style="color: teal">RUN</b>  apt-get install -y -q nodejs inotify-tools
+
+# create app folder
+<b style="color: teal">RUN</b>  mkdir /app  
+<b style="color: teal">WORKDIR</b>  /app
+<b style="color: teal">COPY</b>  . /app  
+<b style="color: teal">EXPOSE</b>  "4000"
+                </pre>
+                
+              </div>
+              <!-- .end .column -->
+            </div>
+            <!-- .end .grid -->
+          </div>
+          <!-- .end .wrap -->
+        </section>
+
+
+
+
+
+
+        <section>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap">
+            <div class="grid vertical-align">
+              
+              # build Phoenix App
+              # docker-compose run dock_phoenix mix phoenix.new . --app dock_phoenix
+
+              # install node dependencies - automagically so no need to do!
+              # docker-compose run --rm dock_phoenix mix deps.get
+              # docker-compose run --rm dock_phoenix npm install  
+              # docker-compose run --rm dock_phoenix node node_modules/brunch/bin/brunch build
+
+              # edit config/dev.exs -> hostname: postgres
+              # get ready to run
+              # docker-compose run --rm dock_phoenix mix ecto.create
+              # docker-compose run --rm dock_phoenix mix compile
+
+              # run phoenix in *dev* mode on port 4000
+              # docker-compose run --rm dock_phoenix mix phoenix.server 
+
+            </div>
+          </div>
+          
+        </section>
 
 
 
