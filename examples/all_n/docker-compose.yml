@@ -1,0 +1,51 @@
+version: '2'  
+services:  
+  all_n_app:
+    # tell docker-compose which Dockerfile it needs to build
+    image: all_n/web
+    build:
+      context: ./app
+      dockerfile: Dockerfile.development
+    # map the port of phoenix to the local dev port
+    ports:
+      - "4000:4000"
+    # mount the code folder inside the running container for easy development
+    volumes:
+      - .:/app
+    # make sure we start postgres when we start this service
+    depends_on:
+      - postgres
+    environment:
+      - POSTGRES_PASSWORD=all_n
+      - POSTGRES_USER=all_n
+      - POSTGRES_DB_USER=all_n
+      - POSTGRES_DB_PASSWORD=pASSword
+      - POSTGRES_DB_DATABASE=all_n_dev
+
+  dock_phoenix_test:
+    image: all_n/web
+    depends_on:
+      - all_n_app
+    command: [ "mix","test" ]
+    environment:
+      - POSTGRES_PASSWORD=all_n
+      - POSTGRES_USER=all_n
+      - POSTGRES_DB_USER=all_n
+      - POSTGRES_DB_PASSWORD=pASSword
+      - POSTGRES_DB_DATABASE=all_n_dev
+
+  postgres:
+    # use postgres 9.3.17
+    image: postgres:latest
+    # map the data volume, this is the way to keep our data persisitent
+    volumes:
+       - ./db/data:/var/lib/postgresql/data
+       
+    # set the user and password for postgres
+    environment:
+      - POSTGRES_PASSWORD=all_n
+      - POSTGRES_USER=all_n
+      - POSTGRES_DB_USER=all_n
+      - POSTGRES_DB_PASSWORD=pASSword
+      - POSTGRES_DB_DATABASE=all_n_dev
+      
