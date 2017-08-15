@@ -579,7 +579,7 @@ $ mkdir proxy db app db/init
 $ cd db && docker build -t all-n-db-image .
 $ docker run --name all-n-db
   -p 127.0.0.1:5432:5432 \
-  -v $(pwd)/data:/var/lib/postgresql/data \
+  -v $(pwd)/db/data:/var/lib/postgresql/data \
   -e POSTGRES_PASSWORD=all_n \
   -e POSTGRES_DB_DATABASE=all_n_dev \
   -e POSTGRES_DB_USER=all_n \
@@ -634,7 +634,7 @@ EOSQL
                 take just a tad more keying in to do than that, especially because we really like to
                 get a feeling for what goes on behind the 'compose' curtains :) [ remember to keep your all-n-db running! ]</p>
                 <pre>
-$ docker build -t all-n-app-image app/Dockerfile.development
+$ docker build -t all-n-app-image -f app/Dockerfile.development app
 $ docker run --rm -e MIX_ENV=dev all-n-app-image:latest mix phx.new . --app all_n 
 
                 </pre>

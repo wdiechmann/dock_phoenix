@@ -1,5 +1,5 @@
-all_n/db/data
+examples/all_n/db/data/*
 .DS_Store
-meetup/mysql/data
-deploy/db/data
-ci_ing/db/data
+examples/meetup/mysql/data/*
+examples/deploy/db/data/*
+examples/ci_ing/db/data/*
