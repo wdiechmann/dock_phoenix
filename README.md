@@ -1,28 +1,29 @@
-# DockPhoenix
+# Docker Provisioning of Elixir/Phoenix App
 
-DockPhoenix really is kind of a Phoenix Template! 
+## What the eff is this?
 
-If you'd like to use this template for a new project, all you have to do is follow 
-the recipe below, labeled: Use DockPhoenix As Template
+A series of talks on the subject - this index.html is the slides to go with it
+and the repo holds the "examples"
 
-Best of all - you do not have to have neither Elixir nor Phoenix installed on your computer!
+- meetup (a first naive implementation with only a mysql db)
+- all_n (an example with all services running as containers)
+- ci_ing (an example with continous integration)
+- deploy (and finally the deploy)
 
-To start your Phoenix app:
+## How do I get started?
 
-  * 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.create && mix ecto.migrate`
-  * Install Node.js dependencies with `npm install`
-  * Start Phoenix endpoint with `mix phoenix.server`
+Install your flavour of Docker (go read about what derivatives exist on your OS platform; 
+my understanding is that Windows holds a few surprises for your benefit)
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+Start a webserver in the presentation folder - on a macOS you could do ```python -m SimpleHTTPServer 5000```
+and visit localhost:5000 in your browser
 
-Ready to run in production? Please [check our deployment guides](http://www.phoenixframework.org/docs/deployment).
+## Thank you
 
-## Learn more
+- a big thanks to https://webslides.tv for this slide-template!!
+- I did not clear all copyrights so please use this for your personal benefit only (or swap images for copylefted ones)
 
-  * Official website: http://www.phoenixframework.org/
-  * Guides: http://phoenixframework.org/docs/overview
-  * Docs: https://hexdocs.pm/phoenix
-  * Mailing list: http://groups.google.com/group/phoenix-talk
-  * Source: https://github.com/phoenixframework/phoenix
+Please fork and offer pull requests if you find errors or better solutions!
+
+
+Happy reading!

@@ -1,0 +1,15 @@
+version: '2'  
+services:  
+  meetup_db:
+    build: ./mysql
+    volumes:
+       - ./mysql/data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+       
+    # set the user and password for mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: meetup
+      MYSQL_DATABASE: meetup_dev
+      MYSQL_USER: meetup
+      MYSQL_PASSWORD: pASSword
