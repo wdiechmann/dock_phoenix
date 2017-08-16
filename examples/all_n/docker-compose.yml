@@ -1,8 +1,20 @@
 version: '2'  
 services:  
-  all_n_app:
+
+  proxy:
+    image: app/proxy
+    build: 
+      context: ./proxy
+    networks:
+      - web
+    links:
+      - app:app
+    ports:
+      - "80:80"
+      - "443:443"
+  app:
     # tell docker-compose which Dockerfile it needs to build
-    image: all_n/web
+    image: app/web
     build:
       context: ./app
       dockerfile: Dockerfile.development
@@ -11,10 +23,14 @@ services:
       - "4000:4000"
     # mount the code folder inside the running container for easy development
     volumes:
-      - .:/app
+      - ./app:/app
+    networks:
+      - db
+      - web
     # make sure we start postgres when we start this service
     depends_on:
-      - postgres
+      - db
+    command: [ "mix", "phoenix.server" ]
     environment:
       - POSTGRES_PASSWORD=all_n
       # - POSTGRES_USER=postgres
@@ -22,10 +38,12 @@ services:
       - POSTGRES_DB_PASSWORD=pASSword
       - POSTGRES_DB_DATABASE=all_n_dev
 
-  dock_phoenix_test:
-    image: all_n/web
+  app_test:
+    image: app/web
+    networks:
+      - db
     depends_on:
-      - all_n_app
+      - db
     command: [ "mix","test" ]
     environment:
       - POSTGRES_PASSWORD=all_n
@@ -34,12 +52,18 @@ services:
       - POSTGRES_DB_PASSWORD=pASSword
       - POSTGRES_DB_DATABASE=all_n_dev
 
-  postgres:
-    # use postgres 9.3.17
-    image: postgres:latest
+  db:
+    image: app/db
+    build:
+      context: ./db
     # map the data volume, this is the way to keep our data persisitent
+    ports:
+      - "5432:5432"
+    # mount the code folder inside the running container for easy development
     volumes:
        - ./db/data:/var/lib/postgresql/data
+    networks:
+      - db
        
     # set the user and password for postgres
     environment:
@@ -49,3 +73,6 @@ services:
       - POSTGRES_DB_PASSWORD=pASSword
       - POSTGRES_DB_DATABASE=all_n_dev
       
+networks:
+  db:
+  web:
